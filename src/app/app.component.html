@@ -1,1 +1,22 @@
-<header-generic/>
+<header-generic [title]="'Homeworks'"/>
+
+
+@defer {
+  <div class="flex justify-center my-10">
+    <div cdkDropListGroup>
+      <list-group [tasks]="tasks" [title]="'done'" [drop]="drop"/>
+      <list-group [tasks]="progress" [title]="'progress'" [drop]="drop"/>
+      <list-group [tasks]="done" [title]="'done'" [drop]="drop"/>
+    </div>
+  </div>
+} @placeholder (minimum 1000ms) {
+  <div class="flex justify-center animate-pulse gap-x-4 my-10">
+
+    @for (item of [1, 2, 3]; track [1, 2, 3]) {
+      <div class="w-[400px] h-[200px] rounded bg-slate-200">
+
+      </div>
+    }
+  </div>
+}
+
