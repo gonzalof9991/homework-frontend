@@ -2,11 +2,15 @@
 
 
 @defer {
-  <div class="flex justify-center my-10">
+  <div class="flex w-full justify-center gap-x-4 my-10">
+    <!-- Pending open/closed date options -->
+    <div class="flex p-3  text-center bg-gray-200 h-max">
+      Habits
+    </div>
     <div cdkDropListGroup>
-      <list-group [tasks]="tasks" [title]="'done'" [drop]="drop"/>
-      <list-group [tasks]="progress" [title]="'progress'" [drop]="drop"/>
-      <list-group [tasks]="done" [title]="'done'" [drop]="drop"/>
+      <list-group [tasks]="tasks" [title]="'New'" [drop]="drop"/>
+      <list-group [tasks]="progress" [title]="'Active'" [drop]="drop"/>
+      <list-group [tasks]="done" [title]="'Closed'" [drop]="drop"/>
     </div>
   </div>
 } @placeholder (minimum 1000ms) {

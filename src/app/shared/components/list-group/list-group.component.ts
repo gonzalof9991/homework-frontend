@@ -15,7 +15,7 @@ import {ListGroupItemComponent} from "./list-group-item/list-group-item.componen
   template: `
 
     <div class="example-container">
-      <h2>{{ title }} {{ tasks.length }}</h2>
+      <h2>{{ title }}</h2>
 
       <div
         cdkDropList
@@ -24,6 +24,10 @@ import {ListGroupItemComponent} from "./list-group-item/list-group-item.componen
         (cdkDropListDropped)="drop($event)">
         @for (task of tasks; track task) {
           <list-group-item [task]="task"/>
+        } @empty {
+          <span class="flex justify-center my-4">
+            No tasks
+          </span>
         }
       </div>
     </div>

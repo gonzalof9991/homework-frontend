@@ -4,7 +4,7 @@ export interface ITask {
   priority: number;
   defeated: number;
   minutes_expected: number;
-  minutes_completed: number | null;
+  minutes_completed: number;
   alert_id: number;
   expiration_date: Date;
   id: number;

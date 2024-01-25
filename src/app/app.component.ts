@@ -36,8 +36,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this._dataService.get<ITask[]>('tasks').subscribe((data) => {
-      console.log(data);
-      this.tasks = data;
+      this.tasks = data.filter((task) => [null,0].includes(task.minutes_completed));
+      this.done = data.filter((task) => task.minutes_completed >= 1);
     });
   }
 
