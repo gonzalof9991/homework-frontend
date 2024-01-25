@@ -1,9 +1,26 @@
-<main class="mx-auto flex flex-col my-20 justify-center gap-y-4 w-max">
-  <h1 class="text-2xl font-medium text-primary">
-    Base Project
-  </h1>
+<header-generic [title]="'Homeworks'"/>
 
-  <button mat-stroked-button color="primary">
-    New Project
-  </button>
-</main>
+
+@defer {
+  <div class="flex w-full justify-center gap-x-4 my-10">
+    <!-- Pending open/closed date options -->
+    <div class="flex p-3  text-center bg-gray-200 h-max">
+      Habits
+    </div>
+    <div cdkDropListGroup>
+      <list-group [tasks]="tasks" [title]="'New'" [drop]="drop"/>
+      <list-group [tasks]="progress" [title]="'Active'" [drop]="drop"/>
+      <list-group [tasks]="done" [title]="'Closed'" [drop]="drop"/>
+    </div>
+  </div>
+} @placeholder (minimum 1000ms) {
+  <div class="flex justify-center animate-pulse gap-x-4 my-10">
+
+    @for (item of [1, 2, 3]; track [1, 2, 3]) {
+      <div class="w-[400px] h-[200px] rounded bg-slate-200">
+
+      </div>
+    }
+  </div>
+}
+
