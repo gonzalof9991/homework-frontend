@@ -61,7 +61,7 @@ import {MatTooltip} from "@angular/material/tooltip";
         </div>
 
       </div>
-
+      <!-- Categories -->
       @for (category of task.categories; track category) {
         <span class="px-2 w-max py-1 rounded-full bg-gray-200 text-gray-700 text-xs font-bold"
         >

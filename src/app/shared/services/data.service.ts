@@ -17,4 +17,12 @@ export class DataService {
   public get<T>(path: string): Observable<T> {
     return this._http.get<T>(`${this._API_URL}${path}`);
   }
+
+  public post<T>(path: string, data: any): Observable<T> {
+    return this._http.post<T>(`${this._API_URL}${path}`, data);
+  }
+
+  public put<T>(path: string, data: any): Observable<T> {
+    return this._http.put<T>(`${this._API_URL}${path}`, data);
+  }
 }
