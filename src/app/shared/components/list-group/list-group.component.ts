@@ -23,7 +23,7 @@ import {ListGroupItemComponent} from "./list-group-item/list-group-item.componen
         [cdkDropListData]="tasks"
         (cdkDropListDropped)="drop($event)">
         @for (task of tasks; track task) {
-          <list-group-item [task]="task"/>
+          <list-group-item #task [task]="task"/>
         } @empty {
           <span class="flex justify-center my-4">
             No tasks

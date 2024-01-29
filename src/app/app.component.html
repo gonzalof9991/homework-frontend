@@ -8,9 +8,9 @@
       Habits
     </div>
     <div cdkDropListGroup>
-      <list-group [tasks]="tasks" [title]="'New'" [drop]="drop"/>
-      <list-group [tasks]="progress" [title]="'Active'" [drop]="drop"/>
-      <list-group [tasks]="done" [title]="'Closed'" [drop]="drop"/>
+      <list-group [tasks]="new" [title]="'New'" [drop]="drop"/>
+      <list-group [tasks]="active" [title]="'Active'" [drop]="drop"/>
+      <list-group [tasks]="closed" [title]="'Closed'" [drop]="drop"/>
     </div>
   </div>
 } @placeholder (minimum 1000ms) {

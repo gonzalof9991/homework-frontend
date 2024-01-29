@@ -3,6 +3,7 @@ export interface ITask {
   description: null | string;
   priority: number;
   defeated: number;
+  type: number;
   minutes_expected: number;
   minutes_completed: number;
   alert_id: number;

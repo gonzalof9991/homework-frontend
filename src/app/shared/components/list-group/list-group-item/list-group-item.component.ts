@@ -22,11 +22,11 @@ import {MatTooltip} from "@angular/material/tooltip";
       <div class="flex flex-col gap-y-2">
         <!-- Priority + Title -->
         <div class="flex gap-x-2">
-          <div class="w-[12px] h-[22px] rounded-full"
+          <div class="w-[10px] h-[20px] border-2 rounded-full"
                [ngClass]="{
-          'bg-green-500': task.priority === 0,
-          'bg-yellow-500': task.priority === 1,
-          'bg-red-500': task.priority === 2,
+          'bg-green-100   border-green-600': task.priority === 0,
+          'bg-yellow-100  border-yellow-600': task.priority === 1,
+          'bg-red-100  border-red-600': task.priority === 2,
         }"
           >
           </div>
