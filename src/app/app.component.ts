@@ -26,9 +26,9 @@ export class AppComponent implements OnInit {
   title = 'frontend';
   //------------------------
   // @ Public
-  public tasks: ITask[] = [];
-  public progress: ITask[] = [];
-  public done: ITask[] = [];
+  public new: ITask[] = [];
+  public active: ITask[] = [];
+  public closed: ITask[] = [];
   public skeletons: number[] = [1, 2, 3];
   //------------------------
   // @ Private
@@ -36,8 +36,10 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this._dataService.get<ITask[]>('tasks').subscribe((data) => {
-      this.tasks = data.filter((task) => [null,0].includes(task.minutes_completed));
-      this.done = data.filter((task) => task.minutes_completed >= 1);
+      console.log(data)
+      this.new = data.filter((task) => task.type === 0);
+      this.active = data.filter((task) => task.type === 1);
+      this.closed = data.filter((task) => task.type === 2);
     });
   }
 
@@ -52,5 +54,12 @@ export class AppComponent implements OnInit {
         event.currentIndex,
       );
     }
+    console.log(event.container.data, 'event')
+    console.log(event.container.id, 'event')
+  }
+
+
+  public findTask = (id: number): ITask | undefined => {
+    return [...this.new, ...this.active, ...this.closed].find((task) => task.id === id);
   }
 }
