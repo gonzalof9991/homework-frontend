@@ -14,23 +14,25 @@ import {ListGroupItemComponent} from "./list-group-item/list-group-item.componen
   ],
   template: `
 
-    <div class="example-container">
-      <h2>{{ title }}</h2>
+      <div class="example-container">
+          <h2>{{ title }}</h2>
 
-      <div
-        cdkDropList
-        class="example-list"
-        [cdkDropListData]="tasks"
-        (cdkDropListDropped)="drop($event)">
-        @for (task of tasks; track task) {
-          <list-group-item #task [task]="task"/>
-        } @empty {
-          <span class="flex justify-center my-4">
-            No tasks
-          </span>
-        }
+          <div
+                  cdkDropList
+                  class="example-list"
+                  [cdkDropListData]="tasks"
+                  (cdkDropListDropped)="drop($event)">
+              @for (task of tasks; track task) {
+                  <list-group-item #task [task]="task"/>
+              } @empty {
+                  <div class="flex justify-center  my-4">
+                      <span class="w-max border bg-gray-50 text-gray-800 p-1 text-sm rounded border-gray-800">
+                        No tasks
+                      </span>
+                  </div>
+              }
+          </div>
       </div>
-    </div>
 
   `,
   inputs: [

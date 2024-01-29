@@ -13,7 +13,10 @@ export interface ITask {
   categories: Category[];
 }
 
+
+
 export interface Category {
+  id: number;
   name: string;
   description: null;
 }

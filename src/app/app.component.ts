@@ -34,12 +34,22 @@ export class AppComponent implements OnInit {
   // @ Private
   private _dataService = inject(DataService);
 
-  ngOnInit() {
-    this._dataService.get<ITask[]>('tasks').subscribe((data) => {
-      console.log(data)
-      this.new = data.filter((task) => task.type === 0);
-      this.active = data.filter((task) => task.type === 1);
-      this.closed = data.filter((task) => task.type === 2);
+  async ngOnInit() {
+    await this.getTasks();
+  }
+
+
+  public getTasks(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._dataService.get<ITask[]>('tasks').subscribe({
+        next: (data) => {
+          this.new = data.filter((task) => task.type === 0);
+          this.active = data.filter((task) => task.type === 1);
+          this.closed = data.filter((task) => task.type === 2);
+        },
+        error: (err) => reject(err),
+        complete: () => resolve()
+      });
     });
   }
 
@@ -54,12 +64,35 @@ export class AppComponent implements OnInit {
         event.currentIndex,
       );
     }
-    console.log(event.container.data, 'event')
-    console.log(event.container.id, 'event')
+    this.filterTasks(event);
+    // Improve performance to update only the task that was moved
+    this.getTasks();
   }
 
 
-  public findTask = (id: number): ITask | undefined => {
-    return [...this.new, ...this.active, ...this.closed].find((task) => task.id === id);
+  public filterTasks(event: CdkDragDrop<ITask[]>): void {
+    const type = event.container.id === 'cdk-drop-list-0' ? 0 : event.container.id === 'cdk-drop-list-1' ? 1 : 2;
+    const tasks = event.container.data.filter((task) => task.type !== type);
+    console.log('init')
+    tasks.forEach(async (task) => {
+      task.type = type;
+      // @ts-ignore
+      task.categories = task.categories.map((category) => category.id);
+      await this.updateTask(task);
+    });
+    console.log('end')
+  }
+
+
+  public updateTask(task: ITask): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._dataService.put(`task/${task.id}`, task)
+        .subscribe({
+          next: () => {
+          },
+          error: (err) => reject(err),
+          complete: () => resolve()
+        })
+    });
   }
 }
