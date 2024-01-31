@@ -9,14 +9,22 @@ export interface ITask {
   alert_id: number;
   expiration_date: Date;
   id: number;
-  owner_id: number;
+  history_id: number;
   categories: Category[];
 }
-
 
 
 export interface Category {
   id: number;
   name: string;
   description: null;
+}
+
+
+export interface IHistory {
+  title: string;
+  description: null;
+  id: number;
+  tasks: ITask[];
+  owner_id: number | null;
 }
