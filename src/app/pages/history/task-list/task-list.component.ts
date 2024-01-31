@@ -1,38 +1,38 @@
 import {Component} from "@angular/core";
 import {CdkDrag, CdkDropList, DragDropModule} from "@angular/cdk/drag-drop";
 import {ITask} from "../../../app.interface";
-import {ListGroupItemComponent} from "./list-group-item/list-group-item.component";
+import {TaskItemComponent} from "./task-item/task-item.component";
 
 @Component({
-  selector: 'list-group',
+  selector: 'task-list',
   standalone: true,
   imports: [
     CdkDrag,
     CdkDropList,
-    ListGroupItemComponent,
-    DragDropModule
+    DragDropModule,
+    TaskItemComponent
   ],
   template: `
 
-      <div class="example-container">
-          <h2>{{ title }}</h2>
+    <div class="example-container">
+      <h2>{{ title }}</h2>
 
-          <div
-                  cdkDropList
-                  class="example-list"
-                  [cdkDropListData]="tasks"
-                  (cdkDropListDropped)="drop($event)">
-              @for (task of tasks; track task) {
-                  <list-group-item #task [task]="task"/>
-              } @empty {
-                  <div class="flex justify-center  my-4">
+      <div
+        cdkDropList
+        [class]="'example-list ' + title"
+        [cdkDropListData]="tasks"
+        (cdkDropListDropped)="drop($event)">
+        @for (task of tasks; track task) {
+          <task-item #task [task]="task"/>
+        } @empty {
+          <div class="flex justify-center  my-4">
                       <span class="w-max border bg-gray-50 text-gray-800 p-1 text-sm rounded border-gray-800">
                         No tasks
                       </span>
-                  </div>
-              }
           </div>
+        }
       </div>
+    </div>
 
   `,
   inputs: [
@@ -50,7 +50,7 @@ import {ListGroupItemComponent} from "./list-group-item/list-group-item.componen
     }
   ]
 })
-export class ListGroupComponent {
+export class TaskListComponent {
   //------------------------
   // @ Inputs
   public title: string = '';

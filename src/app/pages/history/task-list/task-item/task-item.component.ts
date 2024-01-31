@@ -6,7 +6,7 @@ import {MatIcon} from "@angular/material/icon";
 import {MatTooltip} from "@angular/material/tooltip";
 
 @Component({
-  selector: 'list-group-item',
+  selector: 'task-item',
   standalone: true,
   imports: [
     CdkDrag,
@@ -78,7 +78,7 @@ import {MatTooltip} from "@angular/material/tooltip";
     }
   ]
 })
-export class ListGroupItemComponent {
+export class TaskItemComponent {
   //------------------------
   // @ Inputs
   public task!: ITask;
