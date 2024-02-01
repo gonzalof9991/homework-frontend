@@ -10,11 +10,11 @@ export interface ITask {
   expiration_date: Date;
   id: number;
   history_id: number;
-  categories: Category[];
+  categories: ICategory[];
 }
 
 
-export interface Category {
+export interface ICategory {
   id: number;
   name: string;
   description: null;

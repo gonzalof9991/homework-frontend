@@ -10,12 +10,13 @@ import {
   transferArrayItem
 } from "@angular/cdk/drag-drop";
 import {TaskListComponent} from "./task-list/task-list.component";
+import {TaskCreateComponent} from "./task-create/task-create.component";
 
 @Component({
   selector: 'history',
   standalone: true,
   imports: [
-    CdkDropListGroup, CdkDropList, DragDropModule, TaskListComponent,
+    CdkDropListGroup, CdkDropList, DragDropModule, TaskListComponent, TaskCreateComponent,
   ],
   inputs: [
     {
@@ -28,8 +29,14 @@ import {TaskListComponent} from "./task-list/task-list.component";
     @defer {
       <div class="flex w-full justify-center gap-x-4 my-10">
         <!-- Pending open/closed date options -->
-        <div class="flex p-3  text-center bg-gray-200 h-max">
-          {{ history?.title }}
+
+        <div class="flex flex-col justify-center gap-y-2 items-center">
+          <div class="flex p-3  text-center bg-gray-200 h-max">
+
+            {{ history?.title }}
+
+          </div>
+          <task-create [history]="history"/>
         </div>
         <div cdkDropListGroup>
           <task-list [tasks]="new" [title]="'New'" [drop]="drop"/>
