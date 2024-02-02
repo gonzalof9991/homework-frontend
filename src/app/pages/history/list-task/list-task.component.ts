@@ -1,16 +1,16 @@
 import {Component} from "@angular/core";
 import {CdkDrag, CdkDropList, DragDropModule} from "@angular/cdk/drag-drop";
 import {ITask} from "../../../app.interface";
-import {TaskItemComponent} from "./task-item/task-item.component";
+import {ItemTaskComponent} from "./item-task/item-task.component";
 
 @Component({
-  selector: 'task-list',
+  selector: 'list-task',
   standalone: true,
   imports: [
     CdkDrag,
     CdkDropList,
     DragDropModule,
-    TaskItemComponent
+    ItemTaskComponent
   ],
   template: `
 
@@ -23,7 +23,7 @@ import {TaskItemComponent} from "./task-item/task-item.component";
         [cdkDropListData]="tasks"
         (cdkDropListDropped)="drop($event)">
         @for (task of tasks; track task) {
-          <task-item #task [task]="task"/>
+          <item-task #task [task]="task"/>
         } @empty {
           <div class="flex justify-center  my-4">
                       <span class="w-max border bg-gray-50 text-gray-800 p-1 text-sm rounded border-gray-800">
@@ -50,7 +50,7 @@ import {TaskItemComponent} from "./task-item/task-item.component";
     }
   ]
 })
-export class TaskListComponent {
+export class ListTaskComponent {
   //------------------------
   // @ Inputs
   public title: string = '';

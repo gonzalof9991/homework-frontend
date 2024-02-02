@@ -9,14 +9,14 @@ import {
   moveItemInArray,
   transferArrayItem
 } from "@angular/cdk/drag-drop";
-import {TaskListComponent} from "./task-list/task-list.component";
-import {TaskCreateComponent} from "./task-create/task-create.component";
+import {ListTaskComponent} from "./list-task/list-task.component";
+import {CreateTaskComponent} from "./create-task/create-task.component";
 
 @Component({
   selector: 'history',
   standalone: true,
   imports: [
-    CdkDropListGroup, CdkDropList, DragDropModule, TaskListComponent, TaskCreateComponent,
+    CdkDropListGroup, CdkDropList, DragDropModule, ListTaskComponent, CreateTaskComponent,
   ],
   inputs: [
     {
@@ -36,12 +36,12 @@ import {TaskCreateComponent} from "./task-create/task-create.component";
             {{ history?.title }}
 
           </div>
-          <task-create [history]="history"/>
+          <create-task [history]="history"/>
         </div>
         <div cdkDropListGroup>
-          <task-list [tasks]="new" [title]="'New'" [drop]="drop"/>
-          <task-list [tasks]="active" [title]="'Active'" [drop]="drop"/>
-          <task-list [tasks]="closed" [title]="'Closed'" [drop]="drop"/>
+          <list-task [tasks]="new" [title]="'New'" [drop]="drop"/>
+          <list-task [tasks]="active" [title]="'Active'" [drop]="drop"/>
+          <list-task [tasks]="closed" [title]="'Closed'" [drop]="drop"/>
         </div>
       </div>
     } @placeholder (minimum 1000ms) {
