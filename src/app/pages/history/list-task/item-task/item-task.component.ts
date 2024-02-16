@@ -1,12 +1,16 @@
-import {Component} from "@angular/core";
+import {Component, inject} from "@angular/core";
 import {ITask} from "../../../../app.interface";
 import {CdkDrag} from "@angular/cdk/drag-drop";
 import {NgClass, NgIf} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
 import {MatTooltip} from "@angular/material/tooltip";
+import {MatDialog} from "@angular/material/dialog";
+import {DialogTaskComponent} from "../../dialog-task/dialog-task.component";
+import {DataService} from "../../../../shared/services/data.service";
+import {HistoryService} from "../../history.service";
 
 @Component({
-  selector: 'task-item',
+  selector: 'item-task',
   standalone: true,
   imports: [
     CdkDrag,
@@ -18,6 +22,7 @@ import {MatTooltip} from "@angular/material/tooltip";
   template: `
 
     <div class="example-box dark:bg-slate-800" cdkDrag
+         (click)="view()"
     >
       <div class="flex flex-col gap-y-2">
         <!-- Priority + Title -->
@@ -75,11 +80,76 @@ import {MatTooltip} from "@angular/material/tooltip";
     {
       name: 'task',
       required: true
+    },
+    {
+      name: 'historyTitle',
+      required: true
     }
   ]
 })
-export class TaskItemComponent {
+export class ItemTaskComponent {
   //------------------------
   // @ Inputs
   public task!: ITask;
+  public historyTitle!: string;
+  //------------------------
+  // @ Private
+  private _dialog = inject(MatDialog);
+  private _dataService = inject(DataService);
+  private _historyService = inject(HistoryService);
+
+  public view(): void {
+    const dialogRef = this._dialog.open(DialogTaskComponent, {
+      width: '900px',
+      data: {
+        type: 'view',
+        task: this.task
+      }
+    });
+    dialogRef.afterClosed().subscribe({
+      next: async (result: any) => {
+        if (!result) return;
+        // update
+        if (result.type === 'update') {
+          await this._update(result.task);
+        }
+        // delete
+        if (result.type === 'delete') {
+          await this._delete();
+        }
+        // Notify event to re load tasks
+        this._historyService.status.set(`${this.historyTitle}`);
+      }
+    });
+  }
+
+  private _delete(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this._dataService.delete<ITask>(`task/${this.task.id}`).subscribe({
+        next: (task) => {
+          resolve();
+        },
+        error: (error) => {
+          reject(error);
+        }
+      });
+    });
+  }
+
+  private _update(task: ITask): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      const newTask = {
+        ...task,
+        categories: task.categories.map((category) => category.id)
+      };
+      this._dataService.put<ITask>(`task/${this.task.id}`, newTask).subscribe({
+        next: (task) => {
+          resolve();
+        },
+        error: (error) => {
+          reject(error);
+        }
+      });
+    });
+  }
 }

@@ -10,11 +10,24 @@ export interface ITask {
   expiration_date: Date;
   id: number;
   history_id: number;
-  categories: Category[];
+  categories: ICategory[];
 }
 
 
-export interface Category {
+export interface ITaskCreate {
+  title: string;
+  description?: null | string;
+  priority: number;
+  type: number;
+  minutes_expected: number;
+  minutes_completed?: number;
+  alert_id: number;
+  expiration_date: string;
+  categories: number[];
+}
+
+
+export interface ICategory {
   id: number;
   name: string;
   description: null;

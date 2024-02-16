@@ -31,7 +31,6 @@ export class AppComponent implements OnInit {
     return new Promise<void>((resolve, reject) => {
       this._dataService.get<IHistory[]>('histories').subscribe({
         next: (histories) => {
-          console.log(histories);
           this.histories = histories;
           resolve();
         },

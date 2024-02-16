@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from "@angular/core";
+import {Component, effect, inject, OnInit} from "@angular/core";
 import {IHistory, ITask} from "../../app.interface";
 import {DataService} from "../../shared/services/data.service";
 import {
@@ -9,13 +9,15 @@ import {
   moveItemInArray,
   transferArrayItem
 } from "@angular/cdk/drag-drop";
-import {TaskListComponent} from "./task-list/task-list.component";
+import {ListTaskComponent} from "./list-task/list-task.component";
+import {CreateTaskComponent} from "./create-task/create-task.component";
+import {HistoryService} from "./history.service";
 
 @Component({
   selector: 'history',
   standalone: true,
   imports: [
-    CdkDropListGroup, CdkDropList, DragDropModule, TaskListComponent,
+    CdkDropListGroup, CdkDropList, DragDropModule, ListTaskComponent, CreateTaskComponent,
   ],
   inputs: [
     {
@@ -28,16 +30,24 @@ import {TaskListComponent} from "./task-list/task-list.component";
     @defer {
       <div class="flex w-full justify-center gap-x-4 my-10">
         <!-- Pending open/closed date options -->
-        <div class="flex p-3  text-center bg-gray-200 h-max">
-          {{ history?.title }}
+
+        <div class="flex flex-col justify-center gap-y-2 items-center">
+          <div class="flex p-3  text-center bg-primary-50 rounded border border-primary h-max">
+
+            <span class="text-primary font-medium text-sm">
+              {{ history?.title }}
+            </span>
+
+          </div>
+          <create-task [history]="history"/>
         </div>
         <div cdkDropListGroup>
-          <task-list [tasks]="new" [title]="'New'" [drop]="drop"/>
-          <task-list [tasks]="active" [title]="'Active'" [drop]="drop"/>
-          <task-list [tasks]="closed" [title]="'Closed'" [drop]="drop"/>
+          <list-task [tasks]="new" [title]="'New'" [drop]="drop" [historyTitle]="history!.title"/>
+          <list-task [tasks]="active" [title]="'Active'" [drop]="drop" [historyTitle]="history!.title"/>
+          <list-task [tasks]="closed" [title]="'Closed'" [drop]="drop" [historyTitle]="history!.title"/>
         </div>
       </div>
-    } @placeholder (minimum 1000ms) {
+    } @placeholder (minimum 2000ms) {
       <div class="flex justify-center animate-pulse gap-x-4 my-10">
 
         @for (item of [1, 2, 3]; track [1, 2, 3]) {
@@ -63,17 +73,46 @@ export class HistoryComponent implements OnInit {
   //------------------------
   // @ Private
   private _dataService = inject(DataService);
+  private _historyService = inject(HistoryService);
 
-  async ngOnInit() {
-    await this.getTasks();
+  constructor() {
+
+    effect(async () => {
+      const status = this._historyService.status();
+      if (status === this.history?.title) {
+        await this.reloadTaskHistory();
+      }
+    });
   }
 
-  public getTasks(): Promise<void> {
+  async ngOnInit() {
+    await this.fetchTasks();
+  }
+
+  public fetchTasks(): Promise<void> {
     return new Promise((resolve, reject) => {
       const data = this.history?.tasks || [];
       this.new = data.filter((task) => task.type === 0);
       this.active = data.filter((task) => task.type === 1);
       this.closed = data.filter((task) => task.type === 2);
+    });
+  }
+
+  public reloadTaskHistory(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._dataService.get<IHistory>(`history/${this.history?.id}`).subscribe({
+        next: async (history) => {
+          this.history!.tasks = history.tasks;
+          await this.fetchTasks();
+          resolve();
+        },
+        error: (error) => {
+          reject(error);
+        },
+        complete: () => {
+          this._historyService.status.set('');
+        }
+      });
     });
   }
 
@@ -87,12 +126,12 @@ export class HistoryComponent implements OnInit {
         event.previousIndex,
         event.currentIndex,
       );
-      this.filterTasks(event);
+      this.filterTasksByType(event);
     }
   }
 
 
-  public filterTasks(event: CdkDragDrop<ITask[]>): void {
+  public filterTasksByType(event: CdkDragDrop<ITask[]>): void {
     const typeClass = event.container.element.nativeElement.classList[1];
     const type = typeClass === 'New' ? 0 : typeClass === 'Active' ? 1 : 2;
     const tasks = event.container.data.filter((task) => task.type !== type);
@@ -102,12 +141,12 @@ export class HistoryComponent implements OnInit {
       copyTask.type = type;
       // @ts-ignore
       copyTask.categories = copyTask.categories.map((category) => category.id);
-      await this.updateTask(copyTask);
+      await this.updateTaskType(copyTask);
     });
   }
 
 
-  public updateTask(task: ITask): Promise<void> {
+  public updateTaskType(task: ITask): Promise<void> {
     return new Promise((resolve, reject) => {
       this._dataService.put(`task/${task.id}`, task)
         .subscribe({

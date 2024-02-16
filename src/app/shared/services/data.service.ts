@@ -25,4 +25,8 @@ export class DataService {
   public put<T>(path: string, data: any): Observable<T> {
     return this._http.put<T>(`${this._API_URL}${path}`, data);
   }
+
+  public delete<T>(path: string): Observable<T> {
+    return this._http.delete<T>(`${this._API_URL}${path}`);
+  }
 }
