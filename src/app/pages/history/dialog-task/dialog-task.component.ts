@@ -13,20 +13,23 @@ import {MatInputModule} from "@angular/material/input";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatDivider} from "@angular/material/divider";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import type {ICategory} from "../../../app.interface";
+import type {ICategory, ITask} from "../../../app.interface";
 import {
   MatDatepickerModule
 } from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
 import {DataService} from "../../../shared/services/data.service";
 import moment from "moment";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'dialog-task',
   standalone: true,
   template: `
     <form [formGroup]="form">
-      <h1 mat-dialog-title>Historia</h1>
+      <h1 mat-dialog-title class="font-medium text-xl">{{
+          data.type === 'create' ? 'Create' : 'View'
+        }}</h1>
       <div mat-dialog-content class="grid grid-cols-3 gap-4">
         <mat-form-field appearance="outline">
           <input matInput placeholder="Title" formControlName="title">
@@ -80,8 +83,25 @@ import moment from "moment";
         </mat-form-field>
       </div>
       <div mat-dialog-actions class="!flex !justify-end">
-        <button mat-stroked-button (click)="dialogRef.close()">Cerrar</button>
-        <button mat-stroked-button color="primary" [disabled]="!form.valid" (click)="save()">Crear</button>
+        <button mat-stroked-button (click)="dialogRef.close()">
+          Cancel
+        </button>
+        <button mat-stroked-button color="warn"
+                *ngIf="['view'].includes(data.type)"
+                (click)="save('delete')"
+        >
+          Delete
+        </button>
+        <button *ngIf="data.type === 'create'" mat-stroked-button color="primary" [disabled]="!form.valid"
+                (click)="save('create')">
+          Create
+        </button>
+        <button *ngIf="data.type === 'view'" mat-stroked-button color="primary" [disabled]="!form.valid"
+                (click)="save('update')"
+        >
+          Update
+        </button>
+
       </div>
     </form>
   `,
@@ -99,7 +119,8 @@ import moment from "moment";
     ReactiveFormsModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatInputModule
+    MatInputModule,
+    NgIf
   ]
 })
 export class DialogTaskComponent implements OnInit {
@@ -116,6 +137,10 @@ export class DialogTaskComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.buildForm();
+    if (this.data.type === 'view') {
+      this.loadForm(this.data.task)
+    }
+
   }
 
 
@@ -141,8 +166,13 @@ export class DialogTaskComponent implements OnInit {
   }
 
 
-  public save(): void {
+  public loadForm(task: ITask): void {
+    this.form.patchValue(task);
+  }
+
+  public save(type: string): void {
     this.dialogRef.close({
+      type,
       task: {
         ...this.form.value,
         expiration_date: moment(this.form.value.expiration_date).format('YYYY-MM-DD')

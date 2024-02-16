@@ -6,6 +6,7 @@ import {MatTooltip} from "@angular/material/tooltip";
 import {MatDialog} from "@angular/material/dialog";
 import {DialogTaskComponent} from "../dialog-task/dialog-task.component";
 import {DataService} from "../../../shared/services/data.service";
+import {HistoryService} from "../history.service";
 
 
 @Component({
@@ -38,19 +39,23 @@ export class CreateTaskComponent {
   // @ Private
   private _dialog = inject(MatDialog);
   private _dataService = inject(DataService);
+  private _historyService = inject(HistoryService);
 
   public open(): void {
     const dialogRef = this._dialog.open(DialogTaskComponent, {
       width: '900px',
-      data: {history: this.history}
+      data: {
+        type: 'create',
+        history: this.history
+      }
     });
 
     dialogRef.afterClosed().subscribe({
       next: async (result: any) => {
         if (!result) return;
-        console.log('The task-dialog was closed');
-        console.log(result);
         await this._create(result.task);
+        // Notify event to re load tasks
+        this._historyService.status.set(`${this.history?.title}`);
       }
     });
   }
@@ -60,7 +65,6 @@ export class CreateTaskComponent {
     return new Promise<void>((resolve, reject) => {
       this._dataService.post<ITaskCreate>(`histories/${this.history?.id}/tasks`, task).subscribe({
         next: (task) => {
-          console.log(task, 'created');
           resolve();
         },
         error: (error) => {

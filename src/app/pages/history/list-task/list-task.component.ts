@@ -23,7 +23,7 @@ import {ItemTaskComponent} from "./item-task/item-task.component";
         [cdkDropListData]="tasks"
         (cdkDropListDropped)="drop($event)">
         @for (task of tasks; track task) {
-          <item-task #task [task]="task"/>
+          <item-task #task [task]="task" [historyTitle]="historyTitle"/>
         } @empty {
           <div class="flex justify-center  my-4">
                       <span class="w-max border bg-gray-50 text-gray-800 p-1 text-sm rounded border-gray-800">
@@ -41,6 +41,10 @@ import {ItemTaskComponent} from "./item-task/item-task.component";
       required: true
     },
     {
+      name: 'historyTitle',
+      required: true
+    },
+    {
       name: 'tasks',
       required: true
     },
@@ -54,6 +58,7 @@ export class ListTaskComponent {
   //------------------------
   // @ Inputs
   public title: string = '';
+  public historyTitle: string = '';
   public tasks: ITask[] = [];
   public drop!: (event: any) => void;
 }

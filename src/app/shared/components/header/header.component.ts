@@ -6,8 +6,8 @@ import {Component} from "@angular/core";
   imports: [],
   template: `
 
-    <header class="p-3 bg-white text-center shadow">
-      <span class="text-3xl text-primary font-bold" [innerText]="title">
+    <header class="p-3 bg-primary-50 text-primary text-center shadow">
+      <span class="text-3xl  font-bold" [innerText]="title">
       </span>
     </header>
 
