@@ -1,4 +1,4 @@
-import {Component, effect, inject, OnInit} from "@angular/core";
+import {Component, effect, inject, OnInit, signal} from "@angular/core";
 import {IHistory, ITask} from "../../app.interface";
 import {DataService} from "../../shared/services/data.service";
 import {
@@ -12,12 +12,14 @@ import {
 import {ListTaskComponent} from "./list-task/list-task.component";
 import {CreateTaskComponent} from "./create-task/create-task.component";
 import {HistoryService} from "./history.service";
+import {MatIcon} from "@angular/material/icon";
+import {NgClass, NgIf} from "@angular/common";
 
 @Component({
   selector: 'history',
   standalone: true,
   imports: [
-    CdkDropListGroup, CdkDropList, DragDropModule, ListTaskComponent, CreateTaskComponent,
+    CdkDropListGroup, CdkDropList, DragDropModule, ListTaskComponent, CreateTaskComponent, MatIcon, NgClass, NgIf
   ],
   inputs: [
     {
@@ -28,20 +30,48 @@ import {HistoryService} from "./history.service";
   template: `
 
     @defer {
-      <div class="flex w-full justify-center gap-x-4 my-10">
+      <div class="flex w-full justify-center items-baseline gap-x-4 my-10">
         <!-- Pending open/closed date options -->
+        <div
+          class="flex flex-col justify-center gap-y-2 ease-in duration-300 items-center"
+          [ngClass]="{
+              'w-full': !show()
+          }"
+        >
+          <div
+            class="flex flex-col justify-center  cursor-pointer items-center p-3  text-center bg-primary-50 rounded border border-primary h-max"
+            [ngClass]="{
+              'w-1/4': !show()
+            }"
+            (click)="showHistory()"
+          >
 
-        <div class="flex flex-col justify-center gap-y-2 items-center">
-          <div class="flex p-3  text-center bg-primary-50 rounded border border-primary h-max">
-
-            <span class="text-primary font-medium text-sm">
+            <div class="flex justify-center items-center gap-x-2">
+              <span class="text-primary font-medium text-sm">
               {{ history?.title }}
             </span>
 
+              <mat-icon class="text-primary">
+                {{ show() ? 'expand_less' : 'expand_more' }}
+              </mat-icon>
+            </div>
+
+            <!-- Detail History -->
+            <div *ngIf="!show()" class="flex justify-center items-center gap-x-2">
+              <mat-icon class="text-primary">
+                task
+              </mat-icon>
+              <span class="text-primary font-medium text-sm">
+                 {{
+                  history?.tasks?.length
+                }}
+              </span>
+            </div>
           </div>
-          <create-task [history]="history"/>
+
+          <create-task [history]="history" [hidden]="!show()"/>
         </div>
-        <div cdkDropListGroup>
+        <div cdkDropListGroup [hidden]="!show()">
           <list-task [tasks]="new" [title]="'New'" [drop]="drop" [historyTitle]="history!.title"/>
           <list-task [tasks]="active" [title]="'Active'" [drop]="drop" [historyTitle]="history!.title"/>
           <list-task [tasks]="closed" [title]="'Closed'" [drop]="drop" [historyTitle]="history!.title"/>
@@ -58,7 +88,7 @@ import {HistoryService} from "./history.service";
       </div>
     }
 
-  `
+  `,
 })
 export class HistoryComponent implements OnInit {
   //------------------------
@@ -70,6 +100,7 @@ export class HistoryComponent implements OnInit {
   public active: ITask[] = [];
   public closed: ITask[] = [];
   public skeletons: number[] = [1, 2, 3];
+  public show = signal<boolean>(true);
   //------------------------
   // @ Private
   private _dataService = inject(DataService);
@@ -156,5 +187,11 @@ export class HistoryComponent implements OnInit {
           complete: () => resolve()
         })
     });
+  }
+
+
+  public showHistory(): void {
+    console.log(this.history);
+    this.show.set(!this.show());
   }
 }
