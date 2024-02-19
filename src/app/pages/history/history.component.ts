@@ -1,4 +1,4 @@
-import {Component, effect, inject, OnInit, signal} from "@angular/core";
+import {Component, computed, effect, inject, OnInit, signal} from "@angular/core";
 import {IHistory, ITask} from "../../app.interface";
 import {DataService} from "../../shared/services/data.service";
 import {
@@ -14,12 +14,13 @@ import {CreateTaskComponent} from "./create-task/create-task.component";
 import {HistoryService} from "./history.service";
 import {MatIcon} from "@angular/material/icon";
 import {NgClass, NgIf} from "@angular/common";
+import {MatTooltip} from "@angular/material/tooltip";
 
 @Component({
   selector: 'history',
   standalone: true,
   imports: [
-    CdkDropListGroup, CdkDropList, DragDropModule, ListTaskComponent, CreateTaskComponent, MatIcon, NgClass, NgIf
+    CdkDropListGroup, CdkDropList, DragDropModule, ListTaskComponent, CreateTaskComponent, MatIcon, NgClass, NgIf, MatTooltip
   ],
   inputs: [
     {
@@ -39,9 +40,9 @@ import {NgClass, NgIf} from "@angular/common";
           }"
         >
           <div
-            class="flex flex-col justify-center  cursor-pointer items-center p-3  text-center bg-primary-50 rounded border border-primary h-max"
+            class="flex flex-col justify-center  cursor-pointer items-center p-3  text-center bg-white rounded border border-primary h-max"
             [ngClass]="{
-              'w-1/4': !show()
+              'w-1/4 gap-y-2 ': !show()
             }"
             (click)="showHistory()"
           >
@@ -55,17 +56,38 @@ import {NgClass, NgIf} from "@angular/common";
                 {{ show() ? 'expand_less' : 'expand_more' }}
               </mat-icon>
             </div>
-
-            <!-- Detail History -->
-            <div *ngIf="!show()" class="flex justify-center items-center gap-x-2">
-              <mat-icon class="text-primary">
-                task
-              </mat-icon>
-              <span class="text-primary font-medium text-sm">
+            <!-- Box Flex to Details -->
+            <div class="flex gap-x-2">
+              <!-- Total Task -->
+              <div
+                *ngIf="!show()"
+                class="flex justify-center items-center gap-x-2"
+                matTooltip="Total tasks"
+              >
+                <mat-icon class="text-primary">
+                  task
+                </mat-icon>
+                <span class="text-primary font-medium text-sm">
                  {{
-                  history?.tasks?.length
-                }}
+                    history?.tasks?.length
+                  }}
               </span>
+              </div>
+              <!-- Total Defeated -->
+              <div
+                *ngIf="!show()"
+                class="flex justify-center items-center gap-x-2"
+                matTooltip="Total defeated"
+              >
+                <mat-icon class="text-primary">
+                  pending_actions
+                </mat-icon>
+                <span class="text-primary font-medium text-sm">
+                 {{
+                    totalDefeated()
+                  }}
+              </span>
+              </div>
             </div>
           </div>
 
@@ -101,6 +123,7 @@ export class HistoryComponent implements OnInit {
   public closed: ITask[] = [];
   public skeletons: number[] = [1, 2, 3];
   public show = signal<boolean>(true);
+  public totalDefeated = computed(() => this.history?.tasks?.filter((task) => task.defeated === 1).length || 0);
   //------------------------
   // @ Private
   private _dataService = inject(DataService);
@@ -167,31 +190,28 @@ export class HistoryComponent implements OnInit {
     const type = typeClass === 'New' ? 0 : typeClass === 'Active' ? 1 : 2;
     const tasks = event.container.data.filter((task) => task.type !== type);
     tasks.forEach(async (task) => {
-      const copyTask = {...task};
       task.type = type;
-      copyTask.type = type;
       // @ts-ignore
-      copyTask.categories = copyTask.categories.map((category) => category.id);
-      await this.updateTaskType(copyTask);
+      task.categories = task.categories.map((category) => category.id);
+      await this.updateTaskType(task);
+      await this.reloadTaskHistory();
     });
   }
 
-
   public updateTaskType(task: ITask): Promise<void> {
     return new Promise((resolve, reject) => {
-      this._dataService.put(`task/${task.id}`, task)
+      this._dataService.put<ITask>(`task/${task.id}`, task)
         .subscribe({
-          next: () => {
+          next: (res: ITask) => {
+            resolve();
           },
           error: (err) => reject(err),
-          complete: () => resolve()
         })
     });
   }
 
 
   public showHistory(): void {
-    console.log(this.history);
     this.show.set(!this.show());
   }
 }

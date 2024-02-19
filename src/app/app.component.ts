@@ -35,7 +35,6 @@ export class AppComponent implements OnInit {
           resolve();
         },
         error: (error) => {
-          console.log(error);
           reject(error);
         }
       })
