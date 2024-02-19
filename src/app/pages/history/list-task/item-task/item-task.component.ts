@@ -1,4 +1,4 @@
-import {Component, inject} from "@angular/core";
+import {Component, inject, signal} from "@angular/core";
 import {ITask} from "../../../../app.interface";
 import {CdkDrag} from "@angular/cdk/drag-drop";
 import {NgClass, NgIf} from "@angular/common";
@@ -21,23 +21,30 @@ import {HistoryService} from "../../history.service";
   ],
   template: `
 
-    <div class="example-box dark:bg-slate-800" cdkDrag
-         (click)="view()"
+    <div
+      class="example-box dark:bg-slate-800"
+      cdkDrag
+      (click)="view()"
     >
       <div class="flex flex-col gap-y-2">
         <!-- Priority + Title -->
         <div class="flex gap-x-2">
           <div class="w-[10px] h-[20px] border-2 rounded-full"
                [ngClass]="{
-          'bg-green-100   border-green-600': task.priority === 0,
-          'bg-yellow-100  border-yellow-600': task.priority === 1,
-          'bg-red-100  border-red-600': task.priority === 2,
+          'bg-green-100   border-green-600': task().priority === 0,
+          'bg-yellow-100  border-yellow-600': task().priority === 1,
+          'bg-red-100  border-red-600': task().priority === 2,
         }"
           >
           </div>
           <span class="dark:text-white">
-        {{ task.title }}
-      </span>
+            {{ task().title }}
+          </span>
+          <span
+            *ngIf="task().defeated === 1"
+            class="border p-1 border-yellow-400 bg-yellow-50 rounded text-yellow-500 text-xs font-medium">
+            Defeated
+          </span>
         </div>
         <!-- Details -->
         <div class="flex gap-x-2">
@@ -46,14 +53,14 @@ import {HistoryService} from "../../history.service";
             <mat-icon class="text-md text-primary">
               timelapse
             </mat-icon>
-            <span class="text-md" [innerHTML]="task.minutes_expected + ' min'"></span>
+            <span class="text-md" [innerHTML]="task().minutes_expected + ' min'"></span>
           </div>
           <!-- Minutes completed -->
-          <div *ngIf="task.minutes_completed" class="flex items-center gap-x-2" [matTooltip]="'Minutes completed'">
+          <div *ngIf="task().minutes_completed" class="flex items-center gap-x-2" [matTooltip]="'Minutes completed'">
             <mat-icon class="text-md text-primary">
               check_circle
             </mat-icon>
-            <span class="text-md" [innerHTML]="task.minutes_completed + ' min'"></span>
+            <span class="text-md" [innerHTML]="task().minutes_completed + ' min'"></span>
           </div>
           <!-- Days completed -->
           <div class="flex items-center gap-x-2" [matTooltip]="'Days completed'">
@@ -67,7 +74,7 @@ import {HistoryService} from "../../history.service";
 
       </div>
       <!-- Categories -->
-      @for (category of task.categories; track category) {
+      @for (category of task().categories; track category) {
         <span class="px-2 w-max py-1 rounded-full bg-gray-200 text-gray-700 text-xs font-bold"
         >
           {{ category.name }}
@@ -79,7 +86,8 @@ import {HistoryService} from "../../history.service";
   inputs: [
     {
       name: 'task',
-      required: true
+      required: true,
+      transform: (task: ITask) => signal(task)
     },
     {
       name: 'historyTitle',
@@ -90,7 +98,7 @@ import {HistoryService} from "../../history.service";
 export class ItemTaskComponent {
   //------------------------
   // @ Inputs
-  public task!: ITask;
+  public task = signal<ITask>({} as ITask);
   public historyTitle!: string;
   //------------------------
   // @ Private
@@ -125,7 +133,7 @@ export class ItemTaskComponent {
 
   private _delete(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this._dataService.delete<ITask>(`task/${this.task.id}`).subscribe({
+      this._dataService.delete<ITask>(`task/${this.task().id}`).subscribe({
         next: (task) => {
           resolve();
         },
@@ -142,7 +150,7 @@ export class ItemTaskComponent {
         ...task,
         categories: task.categories.map((category) => category.id)
       };
-      this._dataService.put<ITask>(`task/${this.task.id}`, newTask).subscribe({
+      this._dataService.put<ITask>(`task/${this.task().id}`, newTask).subscribe({
         next: (task) => {
           resolve();
         },

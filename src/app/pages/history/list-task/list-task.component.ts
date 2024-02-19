@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, signal} from "@angular/core";
 import {CdkDrag, CdkDropList, DragDropModule} from "@angular/cdk/drag-drop";
 import {ITask} from "../../../app.interface";
 import {ItemTaskComponent} from "./item-task/item-task.component";
@@ -23,7 +23,7 @@ import {ItemTaskComponent} from "./item-task/item-task.component";
         [cdkDropListData]="tasks"
         (cdkDropListDropped)="drop($event)">
         @for (task of tasks; track task) {
-          <item-task #task [task]="task" [historyTitle]="historyTitle"/>
+          <item-task [task]="task" [historyTitle]="historyTitle"/>
         } @empty {
           <div class="flex justify-center  my-4">
                       <span class="w-max border bg-gray-50 text-gray-800 p-1 text-sm rounded border-gray-800">
