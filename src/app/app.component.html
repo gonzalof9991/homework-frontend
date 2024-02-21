@@ -1,6 +1,10 @@
-<header-generic [title]="'Homeworks'"/>
+<main>
+  <header-generic [title]="'Homeworks'"/>
 
-@for (history of histories; track history.id) {
-  <history [history]="history"/>
-}
+  @for (history of histories; track history.id) {
+    <history [history]="history"/>
+  }
+
+</main>
+
 

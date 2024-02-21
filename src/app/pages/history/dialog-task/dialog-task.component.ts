@@ -2,7 +2,7 @@ import {Component, inject, Inject, OnInit} from "@angular/core";
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
-  MatDialogClose,
+  MatDialogClose, MatDialogContainer,
   MatDialogContent,
   MatDialogRef,
   MatDialogTitle
@@ -26,6 +26,7 @@ import {NgIf} from "@angular/common";
   selector: 'dialog-task',
   standalone: true,
   template: `
+
     <form [formGroup]="form">
       <h1 mat-dialog-title class="font-medium text-xl">{{
           data.type === 'create' ? 'Create' : 'View'
@@ -83,7 +84,8 @@ import {NgIf} from "@angular/common";
         </mat-form-field>
       </div>
       <div mat-dialog-actions class="!flex !justify-end">
-        <button mat-stroked-button (click)="dialogRef.close()">
+        <button mat-stroked-button
+                (click)="dialogRef.close()">
           Cancel
         </button>
         <button mat-stroked-button color="warn"
@@ -92,11 +94,13 @@ import {NgIf} from "@angular/common";
         >
           Delete
         </button>
-        <button *ngIf="data.type === 'create'" mat-stroked-button color="primary" [disabled]="!form.valid"
+        <button *ngIf="data.type === 'create'" mat-stroked-button color="primary"
+                [disabled]="!form.valid"
                 (click)="save('create')">
           Create
         </button>
-        <button *ngIf="data.type === 'view'" mat-stroked-button color="primary" [disabled]="!form.valid"
+        <button *ngIf="data.type === 'view'" mat-stroked-button color="primary"
+                [disabled]="!form.valid"
                 (click)="save('update')"
         >
           Update
@@ -120,7 +124,8 @@ import {NgIf} from "@angular/common";
     MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,
-    NgIf
+    NgIf,
+    MatDialogContainer
   ]
 })
 export class DialogTaskComponent implements OnInit {

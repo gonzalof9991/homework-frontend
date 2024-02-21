@@ -22,7 +22,7 @@ import {HistoryService} from "../../history.service";
   template: `
 
     <div
-      class="example-box dark:bg-slate-800"
+      class="example-box"
       cdkDrag
       (click)="view()"
     >
@@ -37,12 +37,12 @@ import {HistoryService} from "../../history.service";
         }"
           >
           </div>
-          <span class="dark:text-white">
+          <span>
             {{ task().title }}
           </span>
           <span
             *ngIf="task().defeated === 1"
-            class="border p-1 border-yellow-400 bg-yellow-50 rounded text-yellow-500 text-xs font-medium">
+            class="border p-1 border-yellow-600 bg-yellow-200 rounded text-yellow-600 text-xs font-medium">
             Defeated
           </span>
         </div>
@@ -50,24 +50,24 @@ import {HistoryService} from "../../history.service";
         <div class="flex gap-x-2">
           <!-- Minutes expected -->
           <div class="flex items-center gap-x-2" [matTooltip]="'Minutes expected'">
-            <mat-icon class="text-md text-primary">
+            <mat-icon class="text-md" color="primary">
               timelapse
             </mat-icon>
-            <span class="text-md" [innerHTML]="task().minutes_expected + ' min'"></span>
+            <span class="text-md " [innerHTML]="task().minutes_expected + ' min'"></span>
           </div>
           <!-- Minutes completed -->
           <div *ngIf="task().minutes_completed" class="flex items-center gap-x-2" [matTooltip]="'Minutes completed'">
-            <mat-icon class="text-md text-primary">
+            <mat-icon class="text-md" color="primary">
               check_circle
             </mat-icon>
-            <span class="text-md" [innerHTML]="task().minutes_completed + ' min'"></span>
+            <span class="text-md " [innerHTML]="task().minutes_completed + ' min'"></span>
           </div>
           <!-- Days completed -->
           <div class="flex items-center gap-x-2" [matTooltip]="'Days completed'">
-            <mat-icon class="text-md text-primary">
+            <mat-icon class="text-md" color="primary">
               fact_check
             </mat-icon>
-            <span class="text-md" [innerHTML]="1 + '/3'"></span>
+            <span class="text-md " [innerHTML]="1 + '/3'"></span>
           </div>
 
         </div>
@@ -111,8 +111,9 @@ export class ItemTaskComponent {
       width: '900px',
       data: {
         type: 'view',
-        task: this.task
-      }
+        task: this.task(),
+      },
+      panelClass: 'dark-dialog'
     });
     dialogRef.afterClosed().subscribe({
       next: async (result: any) => {
