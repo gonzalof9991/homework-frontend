@@ -34,13 +34,13 @@ import {MatTooltip} from "@angular/material/tooltip";
       <div class="flex w-full justify-center items-baseline gap-x-4 my-10">
         <!-- Pending open/closed date options -->
         <div
-          class="flex flex-col justify-center gap-y-2 ease-in duration-300 items-center"
+          class="flex flex-col justify-center gap-y-2  items-center"
           [ngClass]="{
               'w-full': !show()
           }"
         >
           <div
-            class="flex flex-col justify-center  cursor-pointer items-center p-3  text-center bg-white rounded border border-primary h-max"
+            class="flex flex-col justify-center  cursor-pointer items-center p-3  text-center rounded border border-primary  h-max"
             [ngClass]="{
               'w-1/4 gap-y-2 ': !show()
             }"
@@ -48,11 +48,11 @@ import {MatTooltip} from "@angular/material/tooltip";
           >
 
             <div class="flex justify-center items-center gap-x-2">
-              <span class="text-primary font-medium text-sm">
+              <span class=" font-medium text-sm">
               {{ history?.title }}
             </span>
 
-              <mat-icon class="text-primary">
+              <mat-icon color="primary">
                 {{ show() ? 'expand_less' : 'expand_more' }}
               </mat-icon>
             </div>
@@ -64,10 +64,10 @@ import {MatTooltip} from "@angular/material/tooltip";
                 class="flex justify-center items-center gap-x-2"
                 matTooltip="Total tasks"
               >
-                <mat-icon class="text-primary">
+                <mat-icon color="primary">
                   task
                 </mat-icon>
-                <span class="text-primary font-medium text-sm">
+                <span class=" font-medium text-sm">
                  {{
                     history?.tasks?.length
                   }}
@@ -79,10 +79,10 @@ import {MatTooltip} from "@angular/material/tooltip";
                 class="flex justify-center items-center gap-x-2"
                 matTooltip="Total defeated"
               >
-                <mat-icon class="text-primary">
+                <mat-icon color="primary">
                   pending_actions
                 </mat-icon>
-                <span class="text-primary font-medium text-sm">
+                <span class="font-medium text-sm">
                  {{
                     totalDefeated()
                   }}

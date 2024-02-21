@@ -19,14 +19,14 @@ import {ItemTaskComponent} from "./item-task/item-task.component";
 
       <div
         cdkDropList
-        [class]="'example-list ' + title"
+        [class]="'example-list border border-primary ' + title"
         [cdkDropListData]="tasks"
         (cdkDropListDropped)="drop($event)">
         @for (task of tasks; track task) {
           <item-task [task]="task" [historyTitle]="historyTitle"/>
         } @empty {
           <div class="flex justify-center  my-4">
-                      <span class="w-max border bg-gray-50 text-gray-800 p-1 text-sm rounded border-gray-800">
+                      <span class="w-max  text-xs">
                         No tasks
                       </span>
           </div>
