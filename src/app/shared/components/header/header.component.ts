@@ -12,7 +12,7 @@ import {MatIconButton} from "@angular/material/button";
   template: `
 
     <header
-      class="p-3 flex justify-center items-center  text-center">
+      class="p-3 flex justify-center items-center gap-x-4">
       <span class="text-3xl  font-bold" [innerText]="title">
       </span>
       <div [hidden]="false">
