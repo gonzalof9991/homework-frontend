@@ -88,6 +88,21 @@ import {MatTooltip} from "@angular/material/tooltip";
                   }}
               </span>
               </div>
+              <!-- Total Minutes -->
+              <div
+                *ngIf="!show()"
+                class="flex justify-center items-center gap-x-2"
+                matTooltip="Total minutes expected"
+              >
+                <mat-icon color="primary">
+                  hourglass_top
+                </mat-icon>
+                <span class="font-medium text-sm">
+                 {{
+                    totalMinutes()
+                  }}
+              </span>
+              </div>
             </div>
           </div>
 
@@ -124,6 +139,7 @@ export class HistoryComponent implements OnInit {
   public skeletons: number[] = [1, 2, 3];
   public show = signal<boolean>(true);
   public totalDefeated = computed(() => this.history?.tasks?.filter((task) => task.defeated === 1).length || 0);
+  public totalMinutes = computed(() => this.history?.tasks?.reduce((acc, task) => acc + task.minutes_expected, 0) || 0);
   //------------------------
   // @ Private
   private _dataService = inject(DataService);

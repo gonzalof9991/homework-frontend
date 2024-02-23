@@ -1,5 +1,9 @@
 <main>
   <header-generic [title]="'Homeworks'"/>
+  <!-- Create Categories -->
+  <div class="flex justify-center items-center">
+    <category/>
+  </div>
 
   @for (history of histories; track history.id) {
     <history [history]="history"/>

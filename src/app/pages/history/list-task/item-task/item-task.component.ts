@@ -74,12 +74,15 @@ import {HistoryService} from "../../history.service";
 
       </div>
       <!-- Categories -->
-      @for (category of task().categories; track category) {
-        <span class="px-2 w-max py-1 rounded-full bg-gray-200 text-gray-700 text-xs font-bold"
-        >
+      <div class="flex gap-x-2">
+        @for (category of task().categories; track category) {
+          <span class="px-2 w-max py-1 rounded-full bg-gray-200 text-gray-700 text-xs font-bold"
+          >
           {{ category.name }}
         </span>
-      }
+        }
+      </div>
+
     </div>
 
   `,
@@ -112,8 +115,7 @@ export class ItemTaskComponent {
       data: {
         type: 'view',
         task: this.task(),
-      },
-      panelClass: 'dark-dialog'
+      }
     });
     dialogRef.afterClosed().subscribe({
       next: async (result: any) => {
@@ -148,8 +150,7 @@ export class ItemTaskComponent {
   private _update(task: ITask): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       const newTask = {
-        ...task,
-        categories: task.categories.map((category) => category.id)
+        ...task
       };
       this._dataService.put<ITask>(`task/${this.task().id}`, newTask).subscribe({
         next: (task) => {

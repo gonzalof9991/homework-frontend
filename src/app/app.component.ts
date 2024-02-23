@@ -5,11 +5,12 @@ import {HeaderComponent} from "./shared/components/header/header.component";
 import {HistoryComponent} from "./pages/history/history.component";
 import {DataService} from "./shared/services/data.service";
 import {IHistory} from "./app.interface";
+import {CategoryComponent} from "./pages/category/category.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, HistoryComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, HistoryComponent, CategoryComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

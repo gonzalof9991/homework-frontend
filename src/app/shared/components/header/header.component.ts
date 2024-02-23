@@ -1,4 +1,4 @@
-import {Component, signal} from "@angular/core";
+import {Component, OnInit, signal} from "@angular/core";
 import {MatIcon} from "@angular/material/icon";
 import {MatIconButton} from "@angular/material/button";
 
@@ -35,17 +35,36 @@ import {MatIconButton} from "@angular/material/button";
     }
   ]
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   //------------------------
   // @ Inputs
   public title: string = '';
   //------------------------
   // @ Public
   public theme = signal<string>('light');
+  public body: HTMLBodyElement | null = null;
+
+  ngOnInit(): void {
+    this.body = document.querySelector('body');
+    this.checkTheme();
+  }
 
   public changeTheme(): void {
+    this.body?.classList.remove(this.theme());
     this.theme.set(this.theme() === 'light' ? 'dark' : 'light');
-    const body = document.querySelector('body');
-    body?.classList.toggle('dark');
+    this.body?.classList.add(this.theme());
+    window.localStorage.setItem('theme', this.theme());
+  }
+
+  public checkTheme(): void {
+    const theme = window.localStorage.getItem('theme');
+    if (theme) {
+      this.theme.set(theme);
+      this.body?.classList.add(this.theme());
+      return;
+    }
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    this.theme.set(prefersDarkScheme.matches ? 'dark' : 'light');
+    this.body?.classList.add(this.theme());
   }
 }

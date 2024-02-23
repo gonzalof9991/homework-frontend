@@ -23,7 +23,7 @@ import moment from "moment";
 import {NgIf} from "@angular/common";
 
 @Component({
-  selector: 'dialog-task',
+  selector: 'dialog-category-task',
   standalone: true,
   template: `
 
@@ -194,7 +194,6 @@ export class DialogTaskComponent implements OnInit {
           resolve();
         },
         error: (error) => {
-          console.log(error);
           reject(error);
         }
       });
