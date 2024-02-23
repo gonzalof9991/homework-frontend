@@ -19,7 +19,7 @@ import {ItemTaskComponent} from "./item-task/item-task.component";
 
       <div
         cdkDropList
-        [class]="'example-list border border-primary ' + title"
+        [class]="'example-list border border-primary dark:border-white ' + title"
         [cdkDropListData]="tasks"
         (cdkDropListDropped)="drop($event)">
         @for (task of tasks; track task) {

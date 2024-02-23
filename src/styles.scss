@@ -42,10 +42,6 @@ $dark-theme: mat.define-dark-theme((
     primary: $frontend-primary,
     accent: $frontend-accent,
     warn: $frontend-warn,
-    dialog: (
-      background: mat.get-color-from-palette($frontend-primary, A400),
-      color: mat.get-color-from-palette($frontend-primary, default-contrast)
-    )
   ),
   // Only include `typography` and `density` in the default dark theme.
   typography: mat.define-typography-config(),
@@ -64,6 +60,10 @@ $light-theme: mat.define-light-theme((
 // Apply the dark theme by default
 @include mat.all-component-themes($light-theme);
 
+@media (prefers-color-scheme: dark) {
+  @include mat.all-component-themes($dark-theme);
+}
+
 
 html, body {
   height: 100%;
@@ -75,6 +75,10 @@ body {
 
   &.dark {
     @include mat.all-component-themes($dark-theme);
+  }
+
+  &.light {
+    @include mat.all-component-themes($light-theme);
   }
 }
 
