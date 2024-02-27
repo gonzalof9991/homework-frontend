@@ -1,12 +1,20 @@
 <main>
   <header-generic [title]="'Homeworks'"/>
-  <!-- Create Categories -->
-  <div class="flex justify-center items-center">
+
+  <div class="flex justify-center items-center gap-x-2">
+    <!-- Create Categories -->
     <category/>
+    <!-- Create History -->
+    <create-history/>
   </div>
+
 
   @for (history of histories; track history.id) {
     <history [history]="history"/>
+  } @empty {
+    <div class="flex justify-center items-center my-8">
+      <p class="text-2xl ">No histories yet</p>
+    </div>
   }
 
 </main>
