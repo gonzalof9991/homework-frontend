@@ -15,12 +15,13 @@ import {HistoryService} from "./history.service";
 import {MatIcon} from "@angular/material/icon";
 import {NgClass, NgIf} from "@angular/common";
 import {MatTooltip} from "@angular/material/tooltip";
+import {MatButton} from "@angular/material/button";
 
 @Component({
   selector: 'history',
   standalone: true,
   imports: [
-    CdkDropListGroup, CdkDropList, DragDropModule, ListTaskComponent, CreateTaskComponent, MatIcon, NgClass, NgIf, MatTooltip
+    CdkDropListGroup, CdkDropList, DragDropModule, ListTaskComponent, CreateTaskComponent, MatIcon, NgClass, NgIf, MatTooltip, MatButton
   ],
   inputs: [
     {
@@ -105,8 +106,14 @@ import {MatTooltip} from "@angular/material/tooltip";
               </div>
             </div>
           </div>
-
+          <!-- Create Task | Dialog -->
           <create-task [history]="history" [hidden]="!show()"/>
+          <!-- Delete History -->
+          <button *ngIf="show()" mat-stroked-button color="warn" class="flex justify-center items-center"
+                  [matTooltip]="'Delete history'"
+                  (click)="delete()">
+            <mat-icon class="m-0" color="warn">remove</mat-icon>
+          </button>
         </div>
         <div cdkDropListGroup [hidden]="!show()">
           <list-task [tasks]="new" [title]="'New'" [drop]="drop" [historyTitle]="history!.title"/>
@@ -146,9 +153,9 @@ export class HistoryComponent implements OnInit {
   private _historyService = inject(HistoryService);
 
   constructor() {
-
     effect(async () => {
       const status = this._historyService.status();
+      console.log(status, 'status - history');
       if (status === this.history?.title) {
         await this.reloadTaskHistory();
       }
@@ -229,5 +236,21 @@ export class HistoryComponent implements OnInit {
 
   public showHistory(): void {
     this.show.set(!this.show());
+  }
+
+
+  public delete(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._dataService.delete(`history/${this.history?.id}`).subscribe({
+        error: (err) => {
+          reject(err);
+        },
+        complete: () => {
+          this._historyService.status.set('reload');
+          console.log('complete');
+          resolve();
+        }
+      });
+    });
   }
 }

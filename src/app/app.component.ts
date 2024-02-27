@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, effect, inject, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterOutlet} from '@angular/router';
 import {HeaderComponent} from "./shared/components/header/header.component";
@@ -6,11 +6,13 @@ import {HistoryComponent} from "./pages/history/history.component";
 import {DataService} from "./shared/services/data.service";
 import {IHistory} from "./app.interface";
 import {CategoryComponent} from "./pages/category/category.component";
+import {HistoryService} from "./pages/history/history.service";
+import {CreateHistoryComponent} from "./pages/history/create-history/create-history.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, HistoryComponent, CategoryComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, HistoryComponent, CategoryComponent, CreateHistoryComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -22,7 +24,16 @@ export class AppComponent implements OnInit {
   //------------------------
   // @ Private
   private _dataService = inject(DataService);
+  private _historyService = inject(HistoryService);
 
+  constructor() {
+    effect(async () => {
+      const status = this._historyService.status();
+      if (status === 'reload') {
+        await this.getHistories();
+      }
+    });
+  }
 
   async ngOnInit() {
     await this.getHistories();
@@ -37,6 +48,9 @@ export class AppComponent implements OnInit {
         },
         error: (error) => {
           reject(error);
+        },
+        complete: () => {
+          this._historyService.status.set('');
         }
       })
     });

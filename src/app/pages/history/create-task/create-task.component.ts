@@ -14,7 +14,7 @@ import {HistoryService} from "../history.service";
   standalone: true,
   template: `
 
-    <button mat-stroked-button class="flex justify-center items-center" [matTooltip]="'Nueva tarea'"
+    <button mat-stroked-button class="flex justify-center items-center" [matTooltip]="'New task'"
             (click)="open()">
       <mat-icon class="m-0" color="primary">add</mat-icon>
     </button>
