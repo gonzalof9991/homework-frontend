@@ -3,6 +3,9 @@ export interface ITask {
   description: null | string;
   priority: number;
   defeated: number;
+  repeat: number;
+  repeated_date: string;
+  repeated_days: number;
   type: number;
   minutes_expected: number;
   minutes_completed: number;
@@ -37,6 +40,7 @@ export interface ICategory {
 export interface IHistory {
   title: string;
   description: null;
+  added_minutes: number;
   id: number;
   tasks: ITask[];
   owner_id: number | null;

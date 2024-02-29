@@ -16,6 +16,7 @@ import {MatDivider} from "@angular/material/divider";
 import {MatChipGrid, MatChipInput, MatChipInputEvent, MatChipRemove, MatChipRow} from "@angular/material/chips";
 import {MatIcon} from "@angular/material/icon";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
+import {ICategory} from "../../../app.interface";
 
 @Component({
   selector: 'dialog-category',
@@ -46,10 +47,10 @@ import {LiveAnnouncer} from "@angular/cdk/a11y";
         <mat-form-field class="w-full">
           <mat-label>Categories</mat-label>
           <mat-chip-grid #chipGrid aria-label="Enter keywords" [formControl]="formControl">
-            @for (keyword of keywords; track keyword) {
-              <mat-chip-row (removed)="removeKeyword(keyword)">
-                {{ keyword }}
-                <button matChipRemove aria-label="'remove ' + keyword">
+            @for (category of categories; track categories) {
+              <mat-chip-row (removed)="removeCategory(category)">
+                {{ category.name }}
+                <button matChipRemove aria-label="'remove ' + category">
                   <mat-icon>cancel</mat-icon>
                 </button>
               </mat-chip-row>
@@ -72,7 +73,7 @@ import {LiveAnnouncer} from "@angular/cdk/a11y";
 export class DialogCategoryComponent implements OnInit {
   //------------------------
   // @ Public
-  public keywords: string[] = [];
+  public categories: ICategory[] = [];
   public formControl = new FormControl([]);
   public form!: FormGroup;
   public announcer = inject(LiveAnnouncer);
@@ -85,19 +86,18 @@ export class DialogCategoryComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = new FormGroup({});
-    console.log(data);
   }
 
   async ngOnInit() {
     await this._getCategories();
   }
 
-  public async removeKeyword(keyword: string) {
-    const index = this.keywords.indexOf(keyword);
+  public async removeCategory(category: ICategory) {
+    const index = this.categories.indexOf(category);
     if (index >= 0) {
-      this.keywords.splice(index, 1);
-
-      await this.announcer.announce(`removed ${keyword}`);
+      await this._deleteCategory(category.id);
+      this.categories.splice(index, 1);
+      await this.announcer.announce(`removed ${category.name}`);
     }
   }
 
@@ -106,7 +106,7 @@ export class DialogCategoryComponent implements OnInit {
 
     // Add our keyword
     if (value) {
-      this.keywords.push(value);
+      this.categories.push({id: 0, name: value} as ICategory);
       await this._createCategory(value);
     }
 
@@ -116,11 +116,9 @@ export class DialogCategoryComponent implements OnInit {
 
   private _getCategories(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this._dataService.get<any[]>('categories').subscribe({
+      this._dataService.get<ICategory[]>('categories').subscribe({
         next: (categories) => {
-          categories.forEach((category) => {
-            this.keywords.push(category.name);
-          });
+          this.categories = categories;
           resolve();
         },
         error: (error) => {
@@ -133,6 +131,19 @@ export class DialogCategoryComponent implements OnInit {
   private _createCategory(name: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this._dataService.post('category', {name: name}).subscribe({
+        next: (category) => {
+          resolve();
+        },
+        error: (error) => {
+          reject(error);
+        }
+      });
+    });
+  }
+
+  private _deleteCategory(id: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._dataService.delete(`category/${id}`).subscribe({
         next: (category) => {
           resolve();
         },

@@ -1,4 +1,4 @@
-import {Component, inject, Inject, OnInit} from "@angular/core";
+import {Component, inject, Inject, OnInit, signal} from "@angular/core";
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -21,13 +21,14 @@ import {MatNativeDateModule} from "@angular/material/core";
 import {DataService} from "../../../shared/services/data.service";
 import moment from "moment";
 import {NgIf} from "@angular/common";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'dialog-category-task',
   standalone: true,
   template: `
 
-    <form [formGroup]="form">
+    <form [hidden]="hideContent()" [formGroup]="form">
       <h1 mat-dialog-title class="font-medium text-xl">{{
           data.type === 'create' ? 'Create' : 'View'
         }}</h1>
@@ -51,8 +52,10 @@ import {NgIf} from "@angular/common";
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-select placeholder="Repeat" formControlName="repeat">
-            <mat-option [value]="0">Every day</mat-option>
-            <mat-option [value]="1">Every week</mat-option>
+            <mat-option [value]="0">None</mat-option>
+            <mat-option [value]="1">Every day</mat-option>
+            <mat-option [value]="2">Every week</mat-option>
+            <mat-option [value]="3">Every month</mat-option>
           </mat-select>
         </mat-form-field>
         <!-- Categories -->
@@ -108,6 +111,9 @@ import {NgIf} from "@angular/common";
 
       </div>
     </form>
+    <div *ngIf="hideContent()" class="flex justify-center my-8">
+      <mat-spinner></mat-spinner>
+    </div>
   `,
   imports: [
     MatDialogTitle,
@@ -125,14 +131,16 @@ import {NgIf} from "@angular/common";
     MatNativeDateModule,
     MatInputModule,
     NgIf,
-    MatDialogContainer
+    MatDialogContainer,
+    MatProgressSpinner
   ]
 })
 export class DialogTaskComponent implements OnInit {
   //------------------------
   // @ Public
   public form!: FormGroup;
-  public categories: ICategory[] = []
+  public categories: ICategory[] = [];
+  public hideContent = signal<boolean>(true);
   //------------------------
   // @ Private
   private _dataService = inject(DataService);
@@ -142,16 +150,19 @@ export class DialogTaskComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.buildForm();
-    if (this.data.type === 'view') {
-      this.loadForm(this.data.task)
-    }
-
   }
 
 
   async ngOnInit() {
     await this.getCategories();
     await this.getAlerts();
+
+    if (this.data.type === 'view') {
+      this.loadForm(this.data.task)
+    }
+    setTimeout(() => {
+      this.hideContent.set(false);
+    }, 900);
   }
 
 
@@ -173,7 +184,9 @@ export class DialogTaskComponent implements OnInit {
 
   public loadForm(task: ITask): void {
     this.form.patchValue(task);
+    this.form.get('categories')?.patchValue(task.categories.map((category) => category.id));
   }
+
 
   public save(type: string): void {
     this.dialogRef.close({
