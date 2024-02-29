@@ -100,7 +100,7 @@ import {MatButton} from "@angular/material/button";
                 </mat-icon>
                 <span class="font-medium text-sm">
                  {{
-                    totalMinutes()
+                    history?.added_minutes
                   }}
               </span>
               </div>
@@ -146,7 +146,6 @@ export class HistoryComponent implements OnInit {
   public skeletons: number[] = [1, 2, 3];
   public show = signal<boolean>(true);
   public totalDefeated = computed(() => this.history?.tasks?.filter((task) => task.defeated === 1).length || 0);
-  public totalMinutes = computed(() => this.history?.tasks?.reduce((acc, task) => acc + task.minutes_expected, 0) || 0);
   //------------------------
   // @ Private
   private _dataService = inject(DataService);

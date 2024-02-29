@@ -63,11 +63,13 @@ import {HistoryService} from "../../history.service";
             <span class="text-md " [innerHTML]="task().minutes_completed + ' min'"></span>
           </div>
           <!-- Days completed -->
-          <div class="flex items-center gap-x-2" [matTooltip]="'Days completed'">
+          <div class="flex items-center gap-x-2" [matTooltip]="'Repeated days'">
             <mat-icon class="text-md" color="primary">
               fact_check
             </mat-icon>
-            <span class="text-md " [innerHTML]="1 + '/3'"></span>
+            <span class="text-md ">
+              {{ task().repeated_days ? task().repeated_days : 0 }}
+            </span>
           </div>
 
         </div>
