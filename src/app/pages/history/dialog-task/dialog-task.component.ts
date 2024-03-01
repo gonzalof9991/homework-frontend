@@ -188,7 +188,7 @@ export class DialogTaskComponent implements OnInit {
 
 
   public loadByDefault(): void {
-    this.form.get('expiration_date')?.patchValue(new Date());
+    this.form.get('expiration_date')?.patchValue(moment().format());
     this.form.get('type')?.patchValue(0);
     this.form.get('repeat')?.patchValue(1);
     this.form.get('priority')?.patchValue(0);
@@ -200,6 +200,7 @@ export class DialogTaskComponent implements OnInit {
   public loadForm(task: ITask): void {
     this.form.patchValue(task);
     this.form.get('categories')?.patchValue(task.categories.map((category) => category.id));
+    this.form.get('expiration_date')?.patchValue(moment(task.expiration_date).toDate());
   }
 
 
