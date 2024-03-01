@@ -79,17 +79,20 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
         <mat-form-field appearance="outline">
           <input matInput type="number" formControlName="minutes_completed" placeholder="Minutes completed">
         </mat-form-field>
-
         <mat-form-field appearance="outline">
           <mat-select placeholder="Alert" formControlName="alert_id">
             <mat-option [value]="1">Type 1</mat-option>
           </mat-select>
         </mat-form-field>
+        <!-- Description -->
+        <mat-form-field appearance="outline" class="col-span-3">
+          <textarea matInput formControlName="description" placeholder="Description"></textarea>
+        </mat-form-field>
       </div>
       <div mat-dialog-actions class="!flex !justify-end">
         <button mat-stroked-button
                 (click)="dialogRef.close()">
-          Cancel
+          Close
         </button>
         <button mat-stroked-button color="warn"
                 *ngIf="['view'].includes(data.type)"
@@ -159,10 +162,12 @@ export class DialogTaskComponent implements OnInit {
 
     if (this.data.type === 'view') {
       this.loadForm(this.data.task)
+    } else {
+      this.loadByDefault();
     }
     setTimeout(() => {
       this.hideContent.set(false);
-    }, 900);
+    }, 400);
   }
 
 
@@ -179,6 +184,16 @@ export class DialogTaskComponent implements OnInit {
       alert_id: new FormControl('', [Validators.required]),
       categories: new FormControl('', [Validators.required])
     })
+  }
+
+
+  public loadByDefault(): void {
+    this.form.get('expiration_date')?.patchValue(new Date());
+    this.form.get('type')?.patchValue(0);
+    this.form.get('repeat')?.patchValue(1);
+    this.form.get('priority')?.patchValue(0);
+    this.form.get('alert_id')?.patchValue(1);
+    this.form.get('minutes_expected')?.patchValue(30);
   }
 
 
