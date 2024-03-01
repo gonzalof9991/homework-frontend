@@ -68,7 +68,16 @@ import {HistoryService} from "../../history.service";
               fact_check
             </mat-icon>
             <span class="text-md ">
-              {{ task().repeated_days ? task().repeated_days : 0 }}
+              {{ task().repeated_days ? task().repeated_days : 0 }} days
+            </span>
+          </div>
+          <!-- Minutes total -->
+          <div class="flex items-center gap-x-2" [matTooltip]="'Total accumulated minutes'">
+            <mat-icon class="text-md" color="primary">
+              schedule
+            </mat-icon>
+            <span class="text-md ">
+              {{ task().minutes_total ? task().minutes_total : 0 }} min
             </span>
           </div>
 

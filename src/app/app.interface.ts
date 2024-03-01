@@ -9,6 +9,7 @@ export interface ITask {
   type: number;
   minutes_expected: number;
   minutes_completed: number;
+  minutes_total: number;
   alert_id: number;
   expiration_date: Date;
   id: number;
