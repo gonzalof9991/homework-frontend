@@ -60,10 +60,6 @@ $light-theme: mat.define-light-theme((
 // Apply the dark theme by default
 @include mat.all-component-themes($light-theme);
 
-@media (prefers-color-scheme: dark) {
-  @include mat.all-component-themes($dark-theme);
-}
-
 
 html, body {
   height: 100%;
@@ -74,11 +70,11 @@ body {
   font-family: 'Poppins', sans-serif;
 
   &.dark {
-    @include mat.all-component-themes($dark-theme);
+    @include mat.all-component-colors($dark-theme);
   }
 
   &.light {
-    @include mat.all-component-themes($light-theme);
+    @include mat.all-component-colors($light-theme);
   }
 }
 
