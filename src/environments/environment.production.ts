@@ -3,5 +3,5 @@ export const environment = {
   development: false,
   production: true,
   env: "PRODUCTION",
-  apiUrl: "http://localhost:8000/",
+  apiUrl: "https://homework-api-3xl1.onrender.com/",
 };

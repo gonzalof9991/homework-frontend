@@ -29,4 +29,3 @@ jobs:
       - name: Deploy
         run: |
           echo "Deploying to GitHub Pages"
-          npm run deploy
