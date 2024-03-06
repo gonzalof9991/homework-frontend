@@ -5,9 +5,9 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  test:
+    name: Test
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -15,17 +15,37 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: '20.10'
 
       - name: Install dependencies
         run: npm install
 
-        #- name: Run tests
-        #run: npm test
+      - name: Run tests
+        run: npm run test:ci
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.10'
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Build
         run: npm run build:prod
 
-      - name: Deploy
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [ test, build ]
+    steps:
+      - name: Deploy to Netlify
         run: |
-          echo "Deploying to GitHub Pages"
+          curl post https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK }}
