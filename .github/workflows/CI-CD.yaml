@@ -5,9 +5,9 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  test:
+    name: Test
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -15,17 +15,40 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: '20.10'
 
       - name: Install dependencies
         run: npm install
 
-        #- name: Run tests
-        #run: npm test
+      - name: Run tests
+        run: npm test:ci
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.10'
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Build
         run: npm run build:prod
 
-      - name: Deploy
-        run: |
-          echo "Deploying to GitHub Pages"
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to Netlify
+        uses: South-Paw/action-netlify-deploy@v1.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
+          build-dir: './build'
+          comment-on-commit: true
