@@ -8,6 +8,7 @@ import {IHistory} from "./app.interface";
 import {CategoryComponent} from "./pages/category/category.component";
 import {HistoryService} from "./pages/history/history.service";
 import {CreateHistoryComponent} from "./pages/history/create-history/create-history.component";
+import {SnackbarService} from "./shared/services/snackbar/snackbar.service";
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,7 @@ export class AppComponent implements OnInit {
   // @ Private
   private _dataService = inject(DataService);
   private _historyService = inject(HistoryService);
+  private _snackbarService = inject(SnackbarService);
 
   constructor() {
     effect(async () => {
@@ -51,6 +53,7 @@ export class AppComponent implements OnInit {
         },
         complete: () => {
           this._historyService.status.set('');
+          this._snackbarService.open('Histories loaded successfully');
         }
       })
     });

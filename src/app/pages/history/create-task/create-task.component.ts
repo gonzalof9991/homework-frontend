@@ -7,6 +7,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DialogTaskComponent} from "../dialog-task/dialog-task.component";
 import {DataService} from "../../../shared/services/data.service";
 import {HistoryService} from "../history.service";
+import {SnackbarService} from "../../../shared/services/snackbar";
 
 
 @Component({
@@ -41,6 +42,7 @@ export class CreateTaskComponent {
   private _dialog = inject(MatDialog);
   private _dataService = inject(DataService);
   private _historyService = inject(HistoryService);
+  private _snackbarService = inject(SnackbarService);
 
   public open(): void {
     const dialogRef = this._dialog.open(DialogTaskComponent, {
@@ -66,10 +68,11 @@ export class CreateTaskComponent {
     return new Promise<void>((resolve, reject) => {
       this._dataService.post<ITaskCreate>(`histories/${this.history?.id}/tasks`, task).subscribe({
         next: (task) => {
+          this._snackbarService.open('Task created successfully');
           resolve();
         },
         error: (error) => {
-          console.log(error);
+          this._snackbarService.open('Error creating task', '', 5000, true);
           reject(error);
         }
       });

@@ -16,6 +16,7 @@ import {MatIcon} from "@angular/material/icon";
 import {NgClass, NgIf} from "@angular/common";
 import {MatTooltip} from "@angular/material/tooltip";
 import {MatButton} from "@angular/material/button";
+import {SnackbarService} from "../../shared/services/snackbar";
 
 @Component({
   selector: 'history',
@@ -150,11 +151,11 @@ export class HistoryComponent implements OnInit {
   // @ Private
   private _dataService = inject(DataService);
   private _historyService = inject(HistoryService);
+  private _snackbarService = inject(SnackbarService);
 
   constructor() {
     effect(async () => {
       const status = this._historyService.status();
-      console.log(status, 'status - history');
       if (status === this.history?.title) {
         await this.reloadTaskHistory();
       }
@@ -183,10 +184,12 @@ export class HistoryComponent implements OnInit {
           resolve();
         },
         error: (error) => {
+          this._snackbarService.open('Error loading tasks', '', 5000, true);
           reject(error);
         },
         complete: () => {
           this._historyService.status.set('');
+          this._snackbarService.open('Tasks loaded successfully');
         }
       });
     });
@@ -225,9 +228,13 @@ export class HistoryComponent implements OnInit {
       this._dataService.put<ITask>(`task/${task.id}`, task)
         .subscribe({
           next: (res: ITask) => {
+            this._snackbarService.open('Task updated successfully');
             resolve();
           },
-          error: (err) => reject(err),
+          error: (err) => {
+            this._snackbarService.open('Error updating task', '', 5000, true);
+            reject(err)
+          },
         })
     });
   }
@@ -242,11 +249,12 @@ export class HistoryComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this._dataService.delete(`history/${this.history?.id}`).subscribe({
         error: (err) => {
+          this._snackbarService.open('Error deleting history', '', 5000, true);
           reject(err);
         },
         complete: () => {
           this._historyService.status.set('reload');
-          console.log('complete');
+          this._snackbarService.open('History deleted successfully');
           resolve();
         }
       });

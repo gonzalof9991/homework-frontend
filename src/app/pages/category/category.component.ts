@@ -31,7 +31,7 @@ export class CategoryComponent {
     });
     dialogRef.afterClosed().subscribe({
       next: (result: any) => {
-        console.log(result);
+
       }
     });
   }

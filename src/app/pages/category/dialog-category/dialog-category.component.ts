@@ -17,6 +17,7 @@ import {MatChipGrid, MatChipInput, MatChipInputEvent, MatChipRemove, MatChipRow}
 import {MatIcon} from "@angular/material/icon";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {ICategory} from "../../../app.interface";
+import {SnackbarService} from "../../../shared/services/snackbar";
 
 @Component({
   selector: 'dialog-category',
@@ -80,6 +81,7 @@ export class DialogCategoryComponent implements OnInit {
   //------------------------
   // @ Private
   private _dataService = inject(DataService);
+  private _snackbarService = inject(SnackbarService);
 
   constructor(
     public dialogRef: MatDialogRef<DialogCategoryComponent>,
@@ -119,9 +121,11 @@ export class DialogCategoryComponent implements OnInit {
       this._dataService.get<ICategory[]>('categories').subscribe({
         next: (categories) => {
           this.categories = categories;
+          this._snackbarService.open('Categories loaded successfully');
           resolve();
         },
         error: (error) => {
+          this._snackbarService.open('Error loading categories', '', 5000, true);
           reject(error);
         }
       });
@@ -132,9 +136,11 @@ export class DialogCategoryComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this._dataService.post('category', {name: name}).subscribe({
         next: (category) => {
+          this._snackbarService.open('Category created successfully');
           resolve();
         },
         error: (error) => {
+          this._snackbarService.open('Error creating category', '', 5000, true);
           reject(error);
         }
       });
@@ -145,9 +151,11 @@ export class DialogCategoryComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this._dataService.delete(`category/${id}`).subscribe({
         next: (category) => {
+          this._snackbarService.open('Category deleted successfully');
           resolve();
         },
         error: (error) => {
+          this._snackbarService.open('Error deleting category', '', 5000, true);
           reject(error);
         }
       });
