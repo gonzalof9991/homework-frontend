@@ -8,6 +8,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DialogTaskComponent} from "../../dialog-task/dialog-task.component";
 import {DataService} from "../../../../shared/services/data.service";
 import {HistoryService} from "../../history.service";
+import {SnackbarService} from "../../../../shared/services/snackbar";
 
 @Component({
   selector: 'item-task',
@@ -119,6 +120,7 @@ export class ItemTaskComponent {
   private _dialog = inject(MatDialog);
   private _dataService = inject(DataService);
   private _historyService = inject(HistoryService);
+  private _snackbarService = inject(SnackbarService);
 
   public view(): void {
     const dialogRef = this._dialog.open(DialogTaskComponent, {
@@ -149,9 +151,11 @@ export class ItemTaskComponent {
     return new Promise<void>((resolve, reject) => {
       this._dataService.delete<ITask>(`task/${this.task().id}`).subscribe({
         next: (task) => {
+          this._snackbarService.open('Task deleted successfully');
           resolve();
         },
         error: (error) => {
+          this._snackbarService.open('Error deleting task', '', 5000, true);
           reject(error);
         }
       });
@@ -165,9 +169,11 @@ export class ItemTaskComponent {
       };
       this._dataService.put<ITask>(`task/${this.task().id}`, newTask).subscribe({
         next: (task) => {
+          this._snackbarService.open('Task updated successfully');
           resolve();
         },
         error: (error) => {
+          this._snackbarService.open('Error updating task', '', 5000, true);
           reject(error);
         }
       });

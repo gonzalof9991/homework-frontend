@@ -5,6 +5,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {CreateHistoryDialogComponent} from "./create-history-dialog/create-history-dialog.component";
 import {HistoryService} from "../history.service";
 import {DataService} from "../../../shared/services/data.service";
+import {SnackbarService} from "../../../shared/services/snackbar";
 
 @Component({
   selector: 'create-history',
@@ -28,6 +29,7 @@ export class CreateHistoryComponent {
   private _dialog = inject(MatDialog);
   private _historyService = inject(HistoryService);
   private _dataService = inject(DataService);
+  private _snackbarService = inject(SnackbarService);
 
   public open(): void {
     const dialogRef = this._dialog.open(CreateHistoryDialogComponent, {
@@ -54,9 +56,11 @@ export class CreateHistoryComponent {
       }).subscribe({
         next: () => {
           this._historyService.status.set('reload');
+          this._snackbarService.open('History created successfully');
           resolve();
         },
         error: (error) => {
+          this._snackbarService.open('Error creating history', '', 5000, true);
           reject(error);
         }
       });
