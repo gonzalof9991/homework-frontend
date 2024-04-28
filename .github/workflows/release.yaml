@@ -8,11 +8,12 @@ on:
 
 jobs:
   release:
+    permissions: write-all
     name: Create Release
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Create Release
@@ -24,9 +25,9 @@ jobs:
           tag_name: ${{ github.run_number }}
           release_name: Release ${{ github.run_number }}
           body: |
-              Changes in this Release
-              - First Change
-              - Second Change
+            Changes in this Release
+            - First Change
+            - Second Change
           draft: false
           prerelease: false
 
