@@ -8,6 +8,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test:ci": "ng test --watch=false --browsers=ChromeHeadless --code-coverage",
+    "build:dev": "ng build --configuration development",
+    "start:dev": "ng serve --configuration development",
     "build:prod": "ng build --configuration production",
     "start:prod": "ng serve --configuration production"
   },
