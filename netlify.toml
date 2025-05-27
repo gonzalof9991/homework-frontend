@@ -1,2 +1,4 @@
 [prod]
   command = "npm start:prod"
+[dev]
+  command = "npm start:dev"

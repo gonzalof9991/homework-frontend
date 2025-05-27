@@ -1,0 +1,24 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches: [ main,develop,qa ]
+
+jobs:
+  test:
+    uses: ./.github/workflows/test.yaml
+
+  devsecops:
+    needs: test
+    uses: ./.github/workflows/devsecops.yaml
+
+  dev-build:
+    needs: devsecops
+    uses: ./.github/workflows/dev-build.yaml
+
+  prod-build:
+    if: startsWith(github.head_ref, 'release/')
+    uses: ./.github/workflows/prod-build.yaml
+
+
+

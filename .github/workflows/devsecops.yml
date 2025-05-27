@@ -1,0 +1,31 @@
+name: devsecops.yml
+on:
+  workflow_call:
+
+jobs:
+  npm-audit:
+    name: NPM Audit Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.10'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: |
+          mkdir -p reports
+          npm audit --json > reports/npm-audit.json || true
+
+      - name: Upload audit report as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: npm-audit-report
+          path: reports/npm-audit.json
