@@ -25,7 +25,7 @@ jobs:
           npm audit --json > reports/npm-audit.json || true
 
       - name: Upload audit report as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: npm-audit-report
           path: reports/npm-audit.json
