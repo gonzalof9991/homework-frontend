@@ -6,19 +6,19 @@ on:
 
 jobs:
   test:
-    uses: ./.github/workflows/test.yaml
+    uses: ./.github/workflows/test.yml
 
   devsecops:
     needs: test
-    uses: ./.github/workflows/devsecops.yaml
+    uses: ./.github/workflows/devsecops.yml
 
   dev-build:
     needs: devsecops
-    uses: ./.github/workflows/dev-build.yaml
+    uses: ./.github/workflows/dev-build.yml
 
   prod-build:
     if: startsWith(github.head_ref, 'release/')
-    uses: ./.github/workflows/prod-build.yaml
+    uses: ./.github/workflows/prod-build.yml
 
 
 
