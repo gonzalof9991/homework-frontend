@@ -2,23 +2,38 @@ name: CI/CD Pipeline
 
 on:
   pull_request:
-    branches: [ main,develop,qa ]
+    branches: [ main, develop ]
 
 jobs:
   test:
+    if: |
+      github.event_name == 'pull_request' &&
+      (
+        startsWith(github.event.pull_request.head.ref, 'feat/') ||
+        startsWith(github.event.pull_request.head.ref, 'fix/') ||
+        startsWith(github.event.pull_request.head.ref, 'refactor/') ||
+        startsWith(github.event.pull_request.head.ref, 'test/') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/')
+      ) &&
+      github.event.pull_request.base.ref == 'develop'
     uses: ./.github/workflows/test.yml
 
   devsecops:
+    if: needs.test.result == 'success'
     needs: test
     uses: ./.github/workflows/devsecops.yml
 
   dev-build:
+    if: needs.devsecops.result == 'success'
     needs: devsecops
     uses: ./.github/workflows/dev-build.yml
 
   prod-build:
-    if: startsWith(github.head_ref, 'release/')
+    if: |
+      github.event_name == 'pull_request' &&
+      (
+        startsWith(github.event.pull_request.head.ref, 'release/') ||
+        startsWith(github.event.pull_request.head.ref, 'hotfix/')
+      ) &&
+      github.event.pull_request.base.ref == 'main'
     uses: ./.github/workflows/prod-build.yml
-
-
-
