@@ -56,7 +56,7 @@ export class HeaderComponent implements OnInit {
   // @ Public
   public theme = signal<string>('light');
   public body: HTMLBodyElement | null = null;
-  version = '0.1.0';
+  version = '0.2.0';
   env = environment.env;
 
   ngOnInit(): void {
