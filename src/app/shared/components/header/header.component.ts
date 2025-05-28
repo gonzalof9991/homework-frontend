@@ -1,21 +1,33 @@
-import {Component, OnInit, signal} from "@angular/core";
-import {MatIcon} from "@angular/material/icon";
-import {MatIconButton} from "@angular/material/button";
+import {Component, OnInit, signal} from '@angular/core';
+import {MatIcon} from '@angular/material/icon';
+import {MatIconButton} from '@angular/material/button';
+import {environment} from '../../../../environments/environment';
+import {I18nSelectPipe} from '@angular/common';
 
 @Component({
   selector: 'header-generic',
   standalone: true,
   imports: [
     MatIcon,
-    MatIconButton
+    MatIconButton,
+    I18nSelectPipe,
   ],
   template: `
 
     <header
-      class="p-3 flex justify-center items-center gap-x-4">
-      <span class="text-3xl  font-bold" [innerText]="title">
+      class="p-3 flex flex-col justify-center items-center gap-y-2">
+      <span class="text-3xl font-bold" [innerText]="title">
       </span>
-      <div [hidden]="false">
+      <span class="text-xs font-medium">
+        Version {{ version }}{{
+          env | i18nSelect:{
+            PROD: '',
+            DEV: '-dev',
+            LOCAL: '-local'
+          }
+        }}
+      </span>
+      <div>
         <button mat-icon-button (click)="changeTheme()">
           <mat-icon
 
@@ -25,15 +37,16 @@ import {MatIconButton} from "@angular/material/button";
           </mat-icon>
         </button>
       </div>
+
     </header>
 
   `,
   inputs: [
     {
       name: 'title',
-      required: true
-    }
-  ]
+      required: true,
+    },
+  ],
 })
 export class HeaderComponent implements OnInit {
   //------------------------
@@ -43,6 +56,8 @@ export class HeaderComponent implements OnInit {
   // @ Public
   public theme = signal<string>('light');
   public body: HTMLBodyElement | null = null;
+  version = '0.1.0';
+  env = environment.env;
 
   ngOnInit(): void {
     this.body = document.querySelector('body');
