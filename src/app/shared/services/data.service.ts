@@ -7,12 +7,8 @@ import {Observable} from "rxjs";
   providedIn: 'root'
 })
 export class DataService {
-  private readonly _API_URL: string = '';
+  private readonly _API_URL: string = environment.apiUrl;
   private _http = inject(HttpClient);
-
-  constructor() {
-    this._API_URL = environment.apiUrl;
-  }
 
   public get<T>(path: string): Observable<T> {
     return this._http.get<T>(`${this._API_URL}${path}`);
