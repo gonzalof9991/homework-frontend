@@ -163,24 +163,22 @@ export class HistoryComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.fetchTasks();
+    this.fetchTasks();
   }
 
-  public fetchTasks(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const data = this.history?.tasks || [];
-      this.new = data.filter((task) => task.type === 0);
-      this.active = data.filter((task) => task.type === 1);
-      this.closed = data.filter((task) => task.type === 2);
-    });
+  public fetchTasks(): void {
+    const data = this.history?.tasks || [];
+    this.new = data.filter((task) => task.type === 0);
+    this.active = data.filter((task) => task.type === 1);
+    this.closed = data.filter((task) => task.type === 2);
   }
 
   public reloadTaskHistory(): Promise<void> {
     return new Promise((resolve, reject) => {
       this._dataService.get<IHistory>(`history/${this.history?.id}`).subscribe({
-        next: async (history) => {
+        next: (history) => {
           this.history!.tasks = history.tasks;
-          await this.fetchTasks();
+          this.fetchTasks();
           resolve();
         },
         error: (error) => {
